@@ -172,7 +172,9 @@
     position:fixed;top:14px;left:50%;transform:translateX(-50%) translateY(-60px);
     background:var(--ok);color:#fff;padding:11px 20px;border-radius:8px;font-size:13.5px;font-weight:600;
     box-shadow:0 6px 18px rgba(0,0,0,.2);z-index:50;transition:transform .25s ease;
+    max-width:88%;text-align:center;line-height:1.5;
   }
+  .toast.error{background:var(--red);}
   .toast.show{transform:translateX(-50%) translateY(0);}
 
   .archive-panel{
@@ -284,12 +286,8 @@
         <div class="field" style="flex-basis:100%;"><label>Indirizzo</label><input type="text" id="indirizzo" placeholder="Via, città, provincia"></div>
       </div>
       <div class="row">
-        <div class="field small"><label>Tel. <span class="req">*</span></label><input type="tel" id="tel" placeholder="Es. 0564 123456">
-          <div class="field-error-msg" id="tel-error">Numero non valido</div>
-        </div>
-        <div class="field small"><label>Cell.</label><input type="tel" id="cell" placeholder="Es. 333 1234567">
-          <div class="field-error-msg" id="cell-error">Numero non valido</div>
-        </div>
+        <div class="field small"><label>Telefono fisso</label><input type="tel" id="tel" placeholder="Es. 0564 123456"></div>
+        <div class="field small"><label>Cellulare</label><input type="tel" id="cell" placeholder="Es. 333 1234567"></div>
         <div class="field small"><label>Fax</label><input type="tel" id="fax"></div>
       </div>
       <div class="row">
@@ -442,7 +440,7 @@
 
 <footer>
   <button class="btn btn-secondary" id="resetBtn">Nuova scheda</button>
-  <button class="btn btn-primary" id="saveBtn" disabled>Salva scheda</button>
+  <button class="btn btn-primary" id="saveBtn">Salva scheda</button>
 </footer>
 
 <div class="toast" id="toast">Scheda salvata ✓</div>
@@ -574,10 +572,6 @@ document.getElementById('clearSig').addEventListener('click', ()=>{
 
 // ---------- Progress + save gating ----------
 // ---------- Validazione ----------
-function isValidPhone(v){
-  const digits = v.replace(/\D/g,'');
-  return /^[+]?[\d\s\-\/()]{6,20}$/.test(v.trim()) && digits.length >= 6;
-}
 function isValidEmail(v){
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 }
@@ -604,16 +598,6 @@ function validateForm(){
   const ragioneSocialeOk = !!ragioneSociale;
   setFieldError('ragioneSociale','ragioneSociale-error', !ragioneSocialeOk);
   if(!ragioneSocialeOk) errors.push({id:'ragioneSociale', msg:'Ragione sociale obbligatoria'});
-
-  const tel = document.getElementById('tel').value.trim();
-  const telOk = tel && isValidPhone(tel);
-  setFieldError('tel','tel-error', !telOk);
-  if(!telOk) errors.push({id:'tel', msg: tel ? 'Numero di telefono non valido' : 'Telefono obbligatorio'});
-
-  const cell = document.getElementById('cell').value.trim();
-  const cellOk = !cell || isValidPhone(cell);
-  setFieldError('cell','cell-error', !cellOk);
-  if(!cellOk) errors.push({id:'cell', msg:'Numero di cellulare non valido'});
 
   const email = document.getElementById('email').value.trim();
   const emailOk = !email || isValidEmail(email);
@@ -655,25 +639,6 @@ function updateProgress(){
   if(document.getElementById('consenso').checked && hasSig) filled++;
 
   document.getElementById('progressBadge').textContent = `${filled} di ${total} sezioni`;
-
-  // Verifica di validità "leggera" solo per abilitare/disabilitare il pulsante,
-  // senza mostrare i bordi rossi finché l'utente non prova a salvare
-  const agenteOk = !!document.getElementById('agente').value;
-  const ragioneSocialeOk = !!document.getElementById('ragioneSociale').value.trim();
-  const telOk = isValidPhone(document.getElementById('tel').value.trim());
-  const attivitaOk = document.querySelectorAll('#attivitaChips .chip.active').length > 0;
-  const referentiOk = ['amministratore','respParco','respAcquisti','respCantiere','respAltroNome']
-    .some(id => document.getElementById(id).value.trim());
-  const consensoOk = document.getElementById('consenso').checked && hasSig;
-  const email = document.getElementById('email').value.trim();
-  const piva = document.getElementById('piva').value.trim();
-  const emailOk = !email || isValidEmail(email);
-  const pivaOk = !piva || isValidPiva(piva);
-  const cell = document.getElementById('cell').value.trim();
-  const cellOk = !cell || isValidPhone(cell);
-
-  document.getElementById('saveBtn').disabled = !(agenteOk && ragioneSocialeOk && telOk &&
-    attivitaOk && referentiOk && consensoOk && emailOk && pivaOk && cellOk);
 }
 document.getElementById('schedaForm').addEventListener('input', updateProgress);
 document.getElementById('consenso').addEventListener('change', updateProgress);
@@ -868,11 +833,12 @@ function resetForm(){
   updateProgress();
 }
 
-function showToast(msg){
+function showToast(msg, isError){
   const t = document.getElementById('toast');
   t.textContent = msg;
+  t.classList.toggle('error', !!isError);
   t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2200);
+  setTimeout(()=>t.classList.remove('show'), isError ? 4500 : 2200);
 }
 
 async function refreshArchive(){
@@ -896,7 +862,8 @@ async function refreshArchive(){
 document.getElementById('saveBtn').addEventListener('click', async ()=>{
   const result = validateForm();
   if(!result.valid){
-    showToast('⚠️ Controlla i campi evidenziati in rosso');
+    const summary = result.errors.map(e=>e.msg).join(' · ');
+    showToast('⚠️ Impossibile salvare — ' + summary, true);
     const firstErrorEl = document.getElementById(result.errors[0].id);
     if(firstErrorEl) firstErrorEl.scrollIntoView({behavior:'smooth', block:'center'});
     return;
