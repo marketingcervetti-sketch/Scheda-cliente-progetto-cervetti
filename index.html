@@ -104,6 +104,11 @@
   input:focus,textarea:focus,select:focus{
     outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(13,42,92,.12);
   }
+  .req{color:var(--red);font-weight:700;}
+  .input-error{border-color:var(--red) !important;background:#fdf2f2;}
+  .field-error-msg{color:var(--red);font-size:11.5px;margin-top:4px;display:none;}
+  .field-error-msg.show{display:block;}
+  .section.section-error h2{color:var(--red);}
   textarea{resize:vertical;min-height:64px;}
   .chip-group{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
   .chip{
@@ -244,26 +249,56 @@
       <h2><span class="n">1</span>Visita</h2>
       <div class="row">
         <div class="field"><label>Data</label><input type="date" id="data"></div>
-        <div class="field"><label>Agente</label><input type="text" id="agente" placeholder="Nome cognome"></div>
+        <div class="field"><label>Agente <span class="req">*</span></label>
+          <select id="agente" required>
+            <option value="">Seleziona...</option>
+            <option value="Banco">Banco</option>
+            <option value="Aldo Bellocchi">Aldo Bellocchi</option>
+            <option value="Andrea Cervetti">Andrea Cervetti</option>
+            <option value="Cesare Cervetti">Cesare Cervetti</option>
+            <option value="Francesco Cervetti">Francesco Cervetti</option>
+            <option value="Marco Cervetti">Marco Cervetti</option>
+            <option value="Luca Cosimi">Luca Cosimi</option>
+            <option value="Serena Fuligni">Serena Fuligni</option>
+            <option value="Enrico Malavolti">Enrico Malavolti</option>
+            <option value="Antonio Marsicano">Antonio Marsicano</option>
+            <option value="Giuliano Massellucci">Giuliano Massellucci</option>
+            <option value="Leonardo Mazzei">Leonardo Mazzei</option>
+            <option value="Stefano Petrucci">Stefano Petrucci</option>
+            <option value="Luca Quadalti">Luca Quadalti</option>
+            <option value="Luca Settembrini">Luca Settembrini</option>
+          </select>
+          <div class="field-error-msg" id="agente-error">Seleziona un agente</div>
+        </div>
       </div>
     </div>
 
     <div class="section">
       <h2><span class="n">2</span>Anagrafica cliente</h2>
       <div class="row">
-        <div class="field" style="flex-basis:100%;"><label>Ragione sociale</label><input type="text" id="ragioneSociale" placeholder="Nome azienda"></div>
+        <div class="field" style="flex-basis:100%;"><label>Ragione sociale <span class="req">*</span></label><input type="text" id="ragioneSociale" placeholder="Nome azienda">
+          <div class="field-error-msg" id="ragioneSociale-error">Campo obbligatorio</div>
+        </div>
       </div>
       <div class="row">
         <div class="field" style="flex-basis:100%;"><label>Indirizzo</label><input type="text" id="indirizzo" placeholder="Via, città, provincia"></div>
       </div>
       <div class="row">
-        <div class="field small"><label>Tel.</label><input type="tel" id="tel"></div>
-        <div class="field small"><label>Cell.</label><input type="tel" id="cell"></div>
+        <div class="field small"><label>Tel. <span class="req">*</span></label><input type="tel" id="tel" placeholder="Es. 0564 123456">
+          <div class="field-error-msg" id="tel-error">Numero non valido</div>
+        </div>
+        <div class="field small"><label>Cell.</label><input type="tel" id="cell" placeholder="Es. 333 1234567">
+          <div class="field-error-msg" id="cell-error">Numero non valido</div>
+        </div>
         <div class="field small"><label>Fax</label><input type="tel" id="fax"></div>
       </div>
       <div class="row">
-        <div class="field"><label>E-mail / PEC</label><input type="email" id="email"></div>
-        <div class="field small"><label>P.IVA</label><input type="text" id="piva"></div>
+        <div class="field"><label>E-mail / PEC</label><input type="email" id="email" placeholder="nome@azienda.it">
+          <div class="field-error-msg" id="email-error">Email non valida</div>
+        </div>
+        <div class="field small"><label>P.IVA</label><input type="text" id="piva" placeholder="11 cifre" inputmode="numeric" maxlength="11">
+          <div class="field-error-msg" id="piva-error">Deve avere 11 cifre</div>
+        </div>
       </div>
       <div class="row">
         <div class="field" style="flex-basis:100%;"><label>Sede diversa (se presente)</label><input type="text" id="sedeDiversa"></div>
@@ -271,7 +306,7 @@
     </div>
 
     <div class="section">
-      <h2><span class="n">3</span>Attività</h2>
+      <h2><span class="n">3</span>Attività <span class="req">*</span></h2>
       <div class="chip-group" id="attivitaChips">
         <div class="chip" data-val="Cava">Cava</div>
         <div class="chip" data-val="Impresa">Impresa</div>
@@ -284,13 +319,15 @@
         <div class="chip" data-val="Vitivinicola">Vitivinicola</div>
         <div class="chip" data-val="Altro">Altro</div>
       </div>
+      <div class="field-error-msg" id="attivita-error">Seleziona almeno un'attività</div>
       <div class="row" id="attivitaAltroRow" style="display:none;">
         <div class="field" style="flex-basis:100%;"><label>Specificare attività</label><input type="text" id="attivitaAltroSpecifica" placeholder="Es. Trasporti, Vivaio ornamentale..."></div>
       </div>
     </div>
 
     <div class="section">
-      <h2><span class="n">4</span>Referenti</h2>
+      <h2><span class="n">4</span>Referenti <span class="req">*</span></h2>
+      <p class="hint" style="margin-top:-4px;">Compilare almeno uno dei campi seguenti</p>
       <div class="row">
         <div class="field" style="flex-basis:100%;"><label>Amministratore</label><input type="text" id="amministratore"></div>
       </div>
@@ -303,6 +340,7 @@
         <div class="field small"><label>Altro ruolo</label><input type="text" id="respAltroRuolo" placeholder="Es. Direttore tecnico"></div>
         <div class="field"><label>Nominativo</label><input type="text" id="respAltroNome" placeholder="Nome e cognome"></div>
       </div>
+      <div class="field-error-msg" id="referenti-error">Compila almeno un referente</div>
     </div>
 
     <div class="section">
@@ -383,7 +421,7 @@
     </div>
 
     <div class="section">
-      <h2><span class="n">9</span>Consenso privacy e firma</h2>
+      <h2><span class="n">9</span>Consenso privacy e firma <span class="req">*</span></h2>
       <div class="consent-box">
         <input type="checkbox" id="consenso">
         <p>Con la presente, ad ogni effetto di legge, regolamento o norma comunitaria, dichiaro di prestare il mio libero, consapevole, informato, specifico e incondizionato consenso al trattamento dei dati personali, ai sensi della normativa vigente in materia di protezione dei dati.</p>
@@ -396,6 +434,7 @@
         <button type="button" id="clearSig">🗑️ Cancella firma</button>
         <span class="hint" style="margin:0;" id="sigStatus">Firma non ancora inserita</span>
       </div>
+      <div class="field-error-msg" id="consenso-error">Consenso e firma obbligatori per salvare</div>
     </div>
 
   </form>
@@ -534,6 +573,74 @@ document.getElementById('clearSig').addEventListener('click', ()=>{
 });
 
 // ---------- Progress + save gating ----------
+// ---------- Validazione ----------
+function isValidPhone(v){
+  const digits = v.replace(/\D/g,'');
+  return /^[+]?[\d\s\-\/()]{6,20}$/.test(v.trim()) && digits.length >= 6;
+}
+function isValidEmail(v){
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+}
+function isValidPiva(v){
+  return /^\d{11}$/.test(v.trim());
+}
+
+function setFieldError(inputId, errorId, isError){
+  const input = document.getElementById(inputId);
+  const err = document.getElementById(errorId);
+  if(input) input.classList.toggle('input-error', isError);
+  if(err) err.classList.toggle('show', isError);
+}
+
+function validateForm(){
+  const errors = [];
+
+  const agente = document.getElementById('agente').value;
+  const agenteOk = !!agente;
+  setFieldError('agente','agente-error', !agenteOk);
+  if(!agenteOk) errors.push({id:'agente', msg:'Seleziona l\'agente'});
+
+  const ragioneSociale = document.getElementById('ragioneSociale').value.trim();
+  const ragioneSocialeOk = !!ragioneSociale;
+  setFieldError('ragioneSociale','ragioneSociale-error', !ragioneSocialeOk);
+  if(!ragioneSocialeOk) errors.push({id:'ragioneSociale', msg:'Ragione sociale obbligatoria'});
+
+  const tel = document.getElementById('tel').value.trim();
+  const telOk = tel && isValidPhone(tel);
+  setFieldError('tel','tel-error', !telOk);
+  if(!telOk) errors.push({id:'tel', msg: tel ? 'Numero di telefono non valido' : 'Telefono obbligatorio'});
+
+  const cell = document.getElementById('cell').value.trim();
+  const cellOk = !cell || isValidPhone(cell);
+  setFieldError('cell','cell-error', !cellOk);
+  if(!cellOk) errors.push({id:'cell', msg:'Numero di cellulare non valido'});
+
+  const email = document.getElementById('email').value.trim();
+  const emailOk = !email || isValidEmail(email);
+  setFieldError('email','email-error', !emailOk);
+  if(!emailOk) errors.push({id:'email', msg:'Email non valida'});
+
+  const piva = document.getElementById('piva').value.trim();
+  const pivaOk = !piva || isValidPiva(piva);
+  setFieldError('piva','piva-error', !pivaOk);
+  if(!pivaOk) errors.push({id:'piva', msg:'P.IVA non valida (11 cifre)'});
+
+  const attivitaOk = document.querySelectorAll('#attivitaChips .chip.active').length > 0;
+  document.getElementById('attivita-error').classList.toggle('show', !attivitaOk);
+  if(!attivitaOk) errors.push({id:'attivitaChips', msg:'Seleziona almeno un\'attività'});
+
+  const referentiOk = ['amministratore','respParco','respAcquisti','respCantiere','respAltroNome']
+    .some(id => document.getElementById(id).value.trim());
+  document.getElementById('referenti-error').classList.toggle('show', !referentiOk);
+  if(!referentiOk) errors.push({id:'amministratore', msg:'Compila almeno un referente'});
+
+  const consensoOk = document.getElementById('consenso').checked && hasSig;
+  document.getElementById('consenso-error').classList.toggle('show', !consensoOk);
+  if(!consensoOk) errors.push({id:'consenso', msg:'Consenso e firma obbligatori'});
+
+  return {valid: errors.length === 0, errors};
+}
+
 function updateProgress(){
   let filled = 0;
   const total = 9;
@@ -548,7 +655,25 @@ function updateProgress(){
   if(document.getElementById('consenso').checked && hasSig) filled++;
 
   document.getElementById('progressBadge').textContent = `${filled} di ${total} sezioni`;
-  document.getElementById('saveBtn').disabled = !(document.getElementById('ragioneSociale').value.trim() && document.getElementById('consenso').checked && hasSig);
+
+  // Verifica di validità "leggera" solo per abilitare/disabilitare il pulsante,
+  // senza mostrare i bordi rossi finché l'utente non prova a salvare
+  const agenteOk = !!document.getElementById('agente').value;
+  const ragioneSocialeOk = !!document.getElementById('ragioneSociale').value.trim();
+  const telOk = isValidPhone(document.getElementById('tel').value.trim());
+  const attivitaOk = document.querySelectorAll('#attivitaChips .chip.active').length > 0;
+  const referentiOk = ['amministratore','respParco','respAcquisti','respCantiere','respAltroNome']
+    .some(id => document.getElementById(id).value.trim());
+  const consensoOk = document.getElementById('consenso').checked && hasSig;
+  const email = document.getElementById('email').value.trim();
+  const piva = document.getElementById('piva').value.trim();
+  const emailOk = !email || isValidEmail(email);
+  const pivaOk = !piva || isValidPiva(piva);
+  const cell = document.getElementById('cell').value.trim();
+  const cellOk = !cell || isValidPhone(cell);
+
+  document.getElementById('saveBtn').disabled = !(agenteOk && ragioneSocialeOk && telOk &&
+    attivitaOk && referentiOk && consensoOk && emailOk && pivaOk && cellOk);
 }
 document.getElementById('schedaForm').addEventListener('input', updateProgress);
 document.getElementById('consenso').addEventListener('change', updateProgress);
@@ -733,6 +858,8 @@ function resetForm(){
   document.querySelectorAll('.chip.active').forEach(c=>c.classList.remove('active'));
   document.querySelectorAll('.toggle button.active').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.obs-btn.active').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.input-error').forEach(el=>el.classList.remove('input-error'));
+  document.querySelectorAll('.field-error-msg.show').forEach(el=>el.classList.remove('show'));
   document.getElementById('attivitaAltroRow').style.display = 'none';
   ctx.clearRect(0,0,canvas.width,canvas.height);
   hasSig = false;
@@ -767,6 +894,14 @@ async function refreshArchive(){
 }
 
 document.getElementById('saveBtn').addEventListener('click', async ()=>{
+  const result = validateForm();
+  if(!result.valid){
+    showToast('⚠️ Controlla i campi evidenziati in rosso');
+    const firstErrorEl = document.getElementById(result.errors[0].id);
+    if(firstErrorEl) firstErrorEl.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+
   const data = collectData();
   const list = await loadSchede();
   list.push(data);
